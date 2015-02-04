@@ -29,7 +29,7 @@
     
     AdMoGoConfigData *configData = [configDataCenter.config_dict objectForKey:splashAds.config_key];
     
-    [[MobiSageManager getInstance] setPublisherID:[[self.ration objectForKey:@"key"] objectForKey:@"PublisherID"]];
+    [[MobiSageManager getInstance] setPublisherID:[[self.ration objectForKey:@"key"] objectForKey:@"PublisherID"] auditFlag:nil];
     
     AdViewType type =[configData.ad_type intValue];
 	if (type == AdViewTypeSplash) {

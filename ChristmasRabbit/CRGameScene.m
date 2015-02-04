@@ -15,7 +15,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "GCHelper.h"
 #import "ShareServe.h"
-
+#import "WXApi.h"
 #define BELL_SIZE CGSizeMake(40.0f,40.f)
 #define RABBIT_SIZE CGSizeMake(50.0f,50.f)
 #define BELL_DIRECTION_VALUE 60.0f
@@ -137,6 +137,7 @@ typedef NS_ENUM(int, kGameTagValues){
     if (self) {
         
         isStart = NO;
+        isStoping = NO;
         totalBallNums = 0;
         contactedIndex = 0;
         rocketFlyTimeValue = 0 ;
@@ -191,7 +192,9 @@ typedef NS_ENUM(int, kGameTagValues){
 }
 -(void)initStar
 {
-    
+    if (isStoping) {
+        return;
+    }
     if (!self.paused) {
         
     for (int i =0; i<4; i++) {
@@ -416,6 +419,7 @@ typedef NS_ENUM(int, kGameTagValues){
 {
     
     isStart = NO;
+    isStoping = NO;
     contactedIndex = 0;
     totalScores = 0;
     totalBallNums = 0;
@@ -732,6 +736,7 @@ typedef NS_ENUM(int, kGameTagValues){
     [self stopMotionManager];
     
     self.paused = YES;
+    isStoping = YES;
     
     
     if (stopView!=nil) {
@@ -757,7 +762,14 @@ typedef NS_ENUM(int, kGameTagValues){
     currentScoreLabel.lineBreakMode = NSLineBreakByCharWrapping;
     if ([[MyScreenKit getInstance]->lang isEqualToString:@"ch"]) {
         
-        [currentScoreLabel setText:[NSString stringWithFormat:@"您今年能赚%lld元哦，继续加油！\n\n赶紧点击下方微信按钮\n向你小伙伴炫耀一下吧!!",totalScores]];
+        if ([WXApi isWXAppInstalled]) {
+            [currentScoreLabel setText:[NSString stringWithFormat:@"您今年能赚%lld元哦，继续加油！\n\n赶紧点击下方微信按钮\n向你小伙伴炫耀一下吧!!",totalScores]];
+        }
+        else
+        {
+            [currentScoreLabel setText:[NSString stringWithFormat:@"您今年能赚%lld元哦，继续加油！",totalScores]];
+        }
+        
         
     }else
     {
@@ -771,23 +783,24 @@ typedef NS_ENUM(int, kGameTagValues){
     [currentScoreLabel setTextColor:[UIColor whiteColor]];
     [stopView addSubview:currentScoreLabel];
     
-    
-    UIButton *tofriendBtn=[UIButton buttonWithType:UIButtonTypeCustom];
-    [tofriendBtn addTarget:self action:@selector(tofriend:) forControlEvents:UIControlEventTouchUpInside];
-    //    [buttonRestart setTitle:@"重新开始" forState:UIControlStateNormal];
-//    [tofriendBtn setBackgroundColor:[UIColor clearColor]];
-    [tofriendBtn setImage:[UIImage imageNamed:@"weiChatFriend"] forState:UIControlStateNormal];
-    [tofriendBtn setFrame:CGRectMake(self.size.width/2-10-40, currentScoreLabel.frame.size.height+currentScoreLabel.frame.origin.y+10, 40, 40)];
-    [stopView addSubview:tofriendBtn];
-    
-    
-    UIButton *friendCicleBtn=[UIButton buttonWithType:UIButtonTypeCustom];
-    [friendCicleBtn addTarget:self action:@selector(friendCicle:) forControlEvents:UIControlEventTouchUpInside];
-    //    [buttonRestart setTitle:@"重新开始" forState:UIControlStateNormal];
+    if ([WXApi isWXAppInstalled]) {
+        UIButton *tofriendBtn=[UIButton buttonWithType:UIButtonTypeCustom];
+        [tofriendBtn addTarget:self action:@selector(tofriend:) forControlEvents:UIControlEventTouchUpInside];
+        //    [buttonRestart setTitle:@"重新开始" forState:UIControlStateNormal];
     //    [tofriendBtn setBackgroundColor:[UIColor clearColor]];
-    [friendCicleBtn setImage:[UIImage imageNamed:@"friendCircle"] forState:UIControlStateNormal];
-    [friendCicleBtn setFrame:CGRectMake(self.size.width/2+10, currentScoreLabel.frame.size.height+currentScoreLabel.frame.origin.y+10, 40, 40)];
-    [stopView addSubview:friendCicleBtn];
+        [tofriendBtn setImage:[UIImage imageNamed:@"weiChatFriend"] forState:UIControlStateNormal];
+        [tofriendBtn setFrame:CGRectMake(self.size.width/2-10-40, currentScoreLabel.frame.size.height+currentScoreLabel.frame.origin.y+10, 40, 40)];
+        [stopView addSubview:tofriendBtn];
+        
+        
+        UIButton *friendCicleBtn=[UIButton buttonWithType:UIButtonTypeCustom];
+        [friendCicleBtn addTarget:self action:@selector(friendCicle:) forControlEvents:UIControlEventTouchUpInside];
+        //    [buttonRestart setTitle:@"重新开始" forState:UIControlStateNormal];
+        //    [tofriendBtn setBackgroundColor:[UIColor clearColor]];
+        [friendCicleBtn setImage:[UIImage imageNamed:@"friendCircle"] forState:UIControlStateNormal];
+        [friendCicleBtn setFrame:CGRectMake(self.size.width/2+10, currentScoreLabel.frame.size.height+currentScoreLabel.frame.origin.y+10, 40, 40)];
+        [stopView addSubview:friendCicleBtn];
+    }
     
     
     UILabel *maxScoreLabel=[[UILabel alloc] initWithFrame:CGRectMake(self.size.width/4, currentScoreLabel.frame.size.height+currentScoreLabel.frame.origin.y+60, self.size.width/2.0f, 49)];
@@ -983,6 +996,7 @@ typedef NS_ENUM(int, kGameTagValues){
 {
     
     self.paused = YES;
+    isStoping = YES;
     [self stopMotionManager];
     
     if (stopView!=nil) {
@@ -1139,6 +1153,7 @@ typedef NS_ENUM(int, kGameTagValues){
         
         if (isStart==NO) {
             isStart =YES;
+            isStoping = NO;
         }
         
         int bellNodeType = 0;

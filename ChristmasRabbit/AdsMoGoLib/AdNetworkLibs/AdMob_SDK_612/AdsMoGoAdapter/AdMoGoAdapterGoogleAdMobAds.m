@@ -93,9 +93,9 @@
             }
             
             /*2013*/
-            location = [[CLLocation alloc]
+            location = [[[CLLocation alloc]
                         initWithLatitude:[latitude doubleValue] 
-                        longitude:[longitude doubleValue]];
+                        longitude:[longitude doubleValue]] autorelease];
         }
      }
     
@@ -201,7 +201,7 @@
 }
 
 - (void)stopTimer {
-    if (timer!=nil) {
+    if (timer) {
         [timer invalidate];
         [timer release];
         timer = nil;
@@ -213,9 +213,8 @@
     [self stopTimer];
 }
 - (void)dealloc {
-    [super dealloc];
     [self stopTimer];
-
+    [super dealloc];
 }
 #pragma mark Ad Request Lifecycle Notifications
 - (void)adViewDidReceiveAd:(GADBannerView *)adView {

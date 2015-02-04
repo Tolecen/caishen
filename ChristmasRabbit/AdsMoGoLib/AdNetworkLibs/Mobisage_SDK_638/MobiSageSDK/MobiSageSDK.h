@@ -6,6 +6,8 @@
 //  Copyright (c) 2013年 stick. All rights reserved.
 //
 
+// version 6.4.2
+
 #define MS_Test_PublishID        @"zczNHqJZQNf+2euXSg=="
 #define MS_Test_SlotToken_Banner @"hYSFVuoSCJ+2kaPfAhZeuAmj"//横幅广告位
 #define MS_Test_SlotToken_Poster @"TE1MnyPbwVZ/WGoWy9+XccBr"//全屏广告位
@@ -13,10 +15,9 @@
 #define MS_Test_SlotToken_Native @"k5KTQPwEHomgh7XJFABIrh+9"//信息流广告位
 #define MS_Test_SlotToken_Recommend @"19bXBLhAWs3kw/GNUEQM6lv0"//荐计划
 
-#pragma Size_List
-#define Banner_iphone                           (1)       //for iPhone iTouch   320X50
-#define Banner_ipad                             (2)       //for iPad      728X90
-#define Default_size                            (0)       //for default
+#define MS_Test_Audit_Flag   @"IOS_AppStore_v6.4.2"
+
+
 
 #define Float_size_0                            (0)       // for iPhone iTouch 300*250 iPad 600*500
 #define Float_size_3                            (3)       // for iPhone iTouch 320*480  iPad 640*960
@@ -44,6 +45,13 @@ typedef enum
     Ad_Refresh_60 = 5,
 }MSAdRefreshInterval;
 
+typedef enum : NSUInteger {
+    MSAdBannerType_default  = 0,   //for default , iPhone = MSAdBannerType_iPhone, iPad = MSAdBannerType_iPad
+    MSAdBannerType_iPhone   = 1,   //for iPhone 320X50  iPhone6 375*50 iPhone6 Plus 414*50
+    MSAdBannerType_iPad     = 2 ,  //for iPad      728X90
+    MSAdBannerType_big      = 3,   //for iPhone 320X50  iPhone6 375*58 iPhone6 Plus 414*64
+} MSAdBannerType;
+
 @interface MobiSageManager : NSObject
 {
     
@@ -57,19 +65,20 @@ typedef enum
 /**
  *  @brief 设置publisherID
  *  @param publisherID 开发者平台分配给应用的id
+ *  @param flag 审核标识，区分大小写
  */
-- (void)setPublisherID:(NSString*)publisherID;
+- (void)setPublisherID:(NSString*)publisherID auditFlag:(NSString*)flag;
 
 /**
  *  @brief 设置应用分发渠道
  *  @param deployChannel 分发渠道名称
+ *  @param flag 审核标识，区分大小写
  */
-- (void)setPublisherID:(NSString*)publisherID deployChannel:(NSString*)deployChannel;
+- (void)setPublisherID:(NSString*)publisherID deployChannel:(NSString*)deployChannel auditFlag:(NSString*)flag;
 
 /**
  *  @brief 设置是否在应用内打开app store（使用store kit）
  *  @param flag YES在应用内打开，否则在应用外打开
- *  @note  在IOS7下，只支持横屏的应用内打开app store组件，应用会崩溃
  */
 - (void)showStoreInApp:(BOOL)flag;
 
@@ -149,16 +158,17 @@ typedef enum
              slotToken:(NSString *)slotToken;
 
 - (id)initWithDelegate:(id<MobiSageBannerDelegate>)delegate
-                adSize:(NSUInteger)adSize
+                adType:(MSAdBannerType)type
              slotToken:(NSString *)slotToken;
 
 - (id)initWithDelegate:(id<MobiSageBannerDelegate>)delegate
-                adSize:(NSUInteger)adSize
+                adType:(MSAdBannerType)type
              slotToken:(NSString *)slotToken
-          intervalTime:(int)intervalTime
-       switchAnimeType:(int)animeType;
+          intervalTime:(MSAdRefreshInterval)intervalTime
+       switchAnimeType:(MobiSageAnimeType)animeType;
 
-- (void)setAdSize:(NSUInteger)size
+
+- (void)setAdType:(MSAdBannerType)type
         slotToken:(NSString *)slotToken
      intervalTime:(MSAdRefreshInterval)interval
   switchAnimeType:(int)animeType;

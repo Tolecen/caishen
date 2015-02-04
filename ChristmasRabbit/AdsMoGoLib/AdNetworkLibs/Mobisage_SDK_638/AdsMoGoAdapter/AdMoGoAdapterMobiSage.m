@@ -40,22 +40,24 @@
 
     AdViewType type =[configData.ad_type intValue];
     NSString *publishID = [[self.ration objectForKey:@"key"] objectForKey:@"PublisherID"];
-    [[MobiSageManager getInstance] setPublisherID:publishID];
+    [[MobiSageManager getInstance] setPublisherID:publishID
+     
+     auditFlag:nil];
     
     NSString *slotToken = [[self.ration objectForKey:@"key"] objectForKey:@"slotToken"];
 //    NSLog(@"pulishID %@,slotToken %@",publishID,slotToken);
     switch (type) {
         case AdViewTypeNormalBanner:
         case AdViewTypeiPadNormalBanner:
-            adView = [[MobiSageBanner alloc]initWithDelegate:self
-                                                      adSize:Banner_iphone
-                                                   slotToken:slotToken
-                                                intervalTime:Ad_NO_Refresh
-                                             switchAnimeType:noAnime];
+            adView = [[MobiSageBanner alloc] initWithDelegate:self
+                                                        adType:MSAdBannerType_big
+                                                     slotToken:slotToken
+                                                  intervalTime:Ad_NO_Refresh
+                                               switchAnimeType:noAnime];
             break;
         case AdViewTypeLargeBanner:
             adView = [[MobiSageBanner alloc] initWithDelegate:self
-                                                       adSize:Banner_ipad
+                                                       adType:MSAdBannerType_iPad
                                                     slotToken:slotToken
                                                  intervalTime:Ad_NO_Refresh
                                               switchAnimeType:noAnime];

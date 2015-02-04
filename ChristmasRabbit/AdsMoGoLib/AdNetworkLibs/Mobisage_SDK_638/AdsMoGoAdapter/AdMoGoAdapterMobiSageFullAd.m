@@ -15,7 +15,7 @@
 #import "AdMoGoConfigData.h"
 #import "AdMoGoDeviceInfoHelper.h"
 #import "AdMoGoAdSDKInterstitialNetworkRegistry.h"
-
+#define MobisageFullScreen 0
 @implementation AdMoGoAdapterMobiSageFullAd
 
 + (AdMoGoAdNetworkType)networkType{
@@ -44,11 +44,17 @@
     }
    
     
-    [[MobiSageManager getInstance] setPublisherID:[[self.ration objectForKey:@"key"] objectForKey:@"PublisherID"]];
-    
+    [[MobiSageManager getInstance] setPublisherID:[[self.ration objectForKey:@"key"] objectForKey:@"PublisherID"] auditFlag:nil];
+#if MobisageFullScreen
+    adPoster = [[MobiSageFloatWindow alloc] initWithAdSize:Float_size_3
+                                                  delegate:self
+                                                 slotToken:[[self.ration objectForKey:@"key"] objectForKey:@"slotToken"]];
+#else
     adPoster = [[MobiSageFloatWindow alloc] initWithAdSize:Float_size_0
                                                   delegate:self
                                                  slotToken:[[self.ration objectForKey:@"key"] objectForKey:@"slotToken"]];
+#endif
+    
 
     
     [self adapterDidStartRequestAd:self];

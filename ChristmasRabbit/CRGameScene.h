@@ -22,6 +22,7 @@
     BOOL birdLookingRight;//鸟的样子正确
     BOOL yesno;
     float fallRange;
+    BOOL isStoping;
 @public
     BOOL musicOff;
     GameViewController *rootControl;

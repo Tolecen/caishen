@@ -77,7 +77,6 @@
 }
 
 - (void)dealloc{
-    
     if (_splashAd) {
         //芒果调用多盟开屏取消展示
         [_splashAd domobSplashAdDismiss];
@@ -85,7 +84,6 @@
         [_splashAd release];
     }
     [super dealloc];
-    
 }
 
 - (void)adSuccess:(id) _awSplash{
